@@ -1,6 +1,7 @@
 package com.example.spf.controllers;
 
 import com.example.spf.dtos.ProductDTO;
+import com.example.spf.services.FileStorageService;
 import com.example.spf.services.SearchService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ import java.util.List;
 public class SearchController {
     private final SearchService searchService;
 
-    public SearchController(SearchService searchService) {
+    public SearchController(SearchService searchService, FileStorageService fileStorageService) {
         this.searchService = searchService;
     }
 

@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +26,6 @@ public class SearchService {
     @Value("${application.key}")
     private String applicationKey;
 
-    @Value("${temp.image.url}")
-    private String tempImageUrl;
-
     @Value("${search.country}")
     private String searchCountry;
 
@@ -36,21 +34,32 @@ public class SearchService {
 
     private final WebClient webClient;
 
-    public SearchService(WebClient webClient) {
+    private final FileStorageService fileStorageService;
+
+    public SearchService(WebClient webClient, FileStorageService fileStorageService) {
         this.webClient = webClient;
+        this.fileStorageService = fileStorageService;
     }
 
     public Mono<List<ProductDTO>> findByImage(MultipartFile multipartFile) {
+
+        String imagePath;
+        try {
+            imagePath = fileStorageService.saveFile(multipartFile);
+        } catch (IOException e) {
+            throw new RuntimeException("Файл неправильно загружен");
+        }
+
         MultiValueMap<String, String> requestBody = MultiValueMap.fromSingleValue(Map.of(
                 "engine", searchEngine,
                 "search_type", searchType,
-                "url", tempImageUrl,
+                "url", imagePath,
                 "api_key", applicationKey,
                 "country", searchCountry,
                 "hl", searchHl
         ));
 
-        return webClient.get()
+        Mono<List<ProductDTO>> result = webClient.get()
                 .uri(uriBuilder -> uriBuilder.queryParams(requestBody).build()
                 )
                 .retrieve()
@@ -77,5 +86,9 @@ public class SearchService {
                             })
                             .toList();
                 });
+
+        fileStorageService.deleteFile(imagePath);
+
+        return result;
     }
 }
