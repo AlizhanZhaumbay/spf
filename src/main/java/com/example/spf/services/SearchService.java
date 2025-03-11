@@ -92,7 +92,7 @@ public class SearchService {
                             .toList();
                 });
 
-        fileStorageService.deleteFile(imagePath);
+//        fileStorageService.deleteFile(imagePath);
 
         return result;
     }
