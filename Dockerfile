@@ -9,7 +9,3 @@ EXPOSE 8080
 RUN apt-get update && apt-get install -y postgresql-client
 
 CMD ["java", "-jar", "your-application.jar"]
-
-ENV SPRING_DATASOURCE_URL ${DB_URL}
-ENV SPRING_DATASOURCE_USERNAME ${DB_USERNAME}
-ENV SPRING_DATASOURCE_PASSWORD ${DB_PASSWORD}
