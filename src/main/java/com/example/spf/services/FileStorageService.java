@@ -34,7 +34,7 @@ public class FileStorageService {
 
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        return serverUrl + serverPort + "/uploads/" + uniqueFileName;
+        return serverUrl + "/uploads/" + uniqueFileName;
     }
 
     public boolean deleteFile(String fileName) {
