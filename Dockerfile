@@ -2,7 +2,7 @@ FROM openjdk:21-jdk-slim
 
 WORKDIR /app
 
-COPY target/attendance-system-0.0.1-SNAPSHOT.jar /app/attendance-system-0.0.1-SNAPSHOT.jar
+COPY target/spf-0.0.1-SNAPSHOT.jar /app/spf-0.0.1-SNAPSHOT.jar
 
 EXPOSE 8080
 
