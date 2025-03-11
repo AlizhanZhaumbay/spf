@@ -1,11 +1,14 @@
+# Используем OpenJDK 21
 FROM openjdk:21-jdk-slim
 
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-COPY target/spf-0.0.1-SNAPSHOT.jar /app/spf-0.0.1-SNAPSHOT.jar
+# Копируем JAR-файл
+COPY target/spf-0.0.1-SNAPSHOT.jar /app/spf.jar
 
+# Открываем порт
 EXPOSE 8080
 
-RUN apt-get update && apt-get install -y postgresql-client
-
-CMD ["java", "-jar", "your-application.jar"]
+# Запускаем приложение
+CMD ["java", "-jar", "/app/spf.jar"]
