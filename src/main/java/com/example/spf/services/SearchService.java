@@ -1,6 +1,8 @@
 package com.example.spf.services;
 
 import com.example.spf.dtos.ProductDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,8 @@ public class SearchService {
 
     private final FileStorageService fileStorageService;
 
+    private static final Logger log = LoggerFactory.getLogger(SearchService.class);
+
     public SearchService(WebClient webClient, FileStorageService fileStorageService) {
         this.webClient = webClient;
         this.fileStorageService = fileStorageService;
@@ -70,6 +74,7 @@ public class SearchService {
                 )
                 .bodyToMono(Map.class)
                 .map(json -> {
+                    log.info(json.toString());
                     List<Map<String, Object>> visualMatches = (List<Map<String, Object>>) json.get("visual_matches");
                     return visualMatches.stream()
                             .map(product -> {
