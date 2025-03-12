@@ -95,10 +95,11 @@ public class SearchService {
     }
 
     private boolean isSourceInPopularMarketplaces(String source){
-        String[] marketPlaces = {"kaspi", "ozon", "satu", "technodom"};
+        String[] marketPlaces = {"kaspi.kz", "ozon.kz", "satu.kz", "technodom.kz"};
 
         for (String marketplace: marketPlaces){
-            if(source.toLowerCase().startsWith(marketplace)){
+            String format = String.format("https://%s", marketplace);
+            if(source.toLowerCase().startsWith(format)){
                 return true;
             }
         }
