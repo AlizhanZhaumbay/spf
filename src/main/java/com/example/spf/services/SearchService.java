@@ -89,7 +89,7 @@ public class SearchService {
 
                                 return dto;
                             })
-                            .filter(product -> isSourceInPopularMarketplaces(product.getSource()))
+                            .filter(product -> isSourceInPopularMarketplaces(product.getLink()))
                             .toList();
                 });
     }
