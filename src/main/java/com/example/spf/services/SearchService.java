@@ -63,7 +63,7 @@ public class SearchService {
                 "hl", searchHl
         ));
 
-        Mono<List<ProductDTO>> result = webClient.get()
+        return webClient.get()
                 .uri(uriBuilder -> uriBuilder.queryParams(requestBody).build()
                 )
                 .retrieve()
@@ -89,11 +89,20 @@ public class SearchService {
 
                                 return dto;
                             })
+                            .filter(product -> isSourceInPopularMarketplaces(product.getSource()))
                             .toList();
                 });
+    }
 
-//        fileStorageService.deleteFile(imagePath);
+    private boolean isSourceInPopularMarketplaces(String source){
+        String[] marketPlaces = {"kaspi", "ozon", "satu", "technodom"};
 
-        return result;
+        for (String marketplace: marketPlaces){
+            if(source.toLowerCase().startsWith(marketplace)){
+                return true;
+            }
+        }
+
+        return false;
     }
 }
