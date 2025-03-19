@@ -95,15 +95,7 @@ public class SearchService {
     }
 
     private boolean isSourceInPopularMarketplaces(String source){
-        String[] marketPlaces = {"kaspi.kz", "ozon.kz", "satu.kz", "technodom.kz"};
-
-        for (String marketplace: marketPlaces){
-            String format = String.format("https://%s", marketplace);
-            if(source.toLowerCase().startsWith(format)){
-                return true;
-            }
-        }
-
-        return false;
+//        String[] marketPlaces = {"kaspi.kz", "ozon.kz", "satu.kz", "technodom.kz"};
+        return source.contains(".kz");
     }
 }
