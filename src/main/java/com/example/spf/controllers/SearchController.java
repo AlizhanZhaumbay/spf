@@ -22,9 +22,16 @@ public class SearchController {
         this.searchService = searchService;
     }
 
-    @PostMapping("find")
-    public ResponseEntity<Mono<List<ProductDTO>>> find(
+    @PostMapping("search/image")
+    public ResponseEntity<Mono<List<ProductDTO>>> findByImage(
             @RequestParam("image") MultipartFile image){
         return ResponseEntity.ok(searchService.findByImage(image));
     }
+
+    @PostMapping("search/text")
+    public ResponseEntity<Mono<List<ProductDTO>>> findByText(
+            @RequestParam("text") String text){
+        return ResponseEntity.ok(searchService.findByText(text));
+    }
+
 }
