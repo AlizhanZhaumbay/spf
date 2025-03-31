@@ -132,7 +132,7 @@ public class SearchService {
                                 ProductDTO dto = new ProductDTO();
                                 dto.setTitle((String) product.get("title"));
                                 dto.setPrice((String) product.get("price"));
-                                dto.setLink((String) product.get("product_link"));
+                                dto.setLink((String) product.get("link"));
                                 dto.setSource((String) product.get("seller"));
                                 dto.setImageLink((String) product.get("thumbnail"));
                                 return dto;
