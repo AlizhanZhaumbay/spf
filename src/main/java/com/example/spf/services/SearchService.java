@@ -85,7 +85,8 @@ public class SearchService {
                                 dto.setLink((String) product.get("link"));
                                 dto.setSource((String) product.get("source"));
 
-                                dto.setImageLink((String) product.get("image"));
+                                Map<String, Object> image = (Map<String, Object>) product.get("image");
+                                dto.setImageLink((String) image.get("link"));
 
 
                                 return dto;
