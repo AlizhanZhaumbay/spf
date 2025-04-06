@@ -118,7 +118,10 @@ public class SearchService {
         ));
 
         return webClient.get()
-                .uri(uriBuilder -> uriBuilder.queryParams(requestBody).build()
+                .uri(uriBuilder ->
+                        uriBuilder.path("")
+                                .queryParams(requestBody)
+                                .build()
                 )
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, response ->
