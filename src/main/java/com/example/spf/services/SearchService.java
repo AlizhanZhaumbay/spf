@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -68,7 +69,10 @@ public class SearchService {
         ));
 
         return webClient.get()
-                .uri(uriBuilder -> uriBuilder.queryParams(requestBody).build()
+                .uri(uriBuilder ->
+                        uriBuilder.path("")
+                                .queryParams(requestBody)
+                                .build()
                 )
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse ->
@@ -109,7 +113,7 @@ public class SearchService {
                 "location", location,
                 "hl", searchHl,
                 "q", text,
-                "gl","kz",
+                "gl", "kz",
                 "google_domain", "google.kz"
         ));
 
@@ -148,11 +152,11 @@ public class SearchService {
 
     }
 
-    private boolean isSourceInKz(String source){
+    private boolean isSourceInKz(String source) {
         return source.contains(".kz");
     }
 
-    private String fetchHost(String productUrl){
+    private String fetchHost(String productUrl) {
         try {
             URL url = new URL(productUrl);
             return url.getHost();
@@ -161,7 +165,7 @@ public class SearchService {
         }
     }
 
-    private String fetchLogoUrl(String productUrl){
+    private String fetchLogoUrl(String productUrl) {
         return logoParserUrl.replace("{host}", fetchHost(productUrl));
     }
 }
