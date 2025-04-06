@@ -10,6 +10,8 @@ public class ProductDTO {
     private String price;
     private String source;
 
+    private String logoUrl;
+
     public String getTitle() {
         return title;
     }
@@ -48,5 +50,13 @@ public class ProductDTO {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
     }
 }

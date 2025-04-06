@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +27,9 @@ public class SearchService {
 
     @Value("${search.hl}")
     private String searchHl;
+
+    @Value("${logo.parser.url}")
+    private String logoParserUrl;
 
     private final WebClient webClient;
 
@@ -87,11 +90,11 @@ public class SearchService {
 
                                 Map<String, Object> image = (Map<String, Object>) product.get("image");
                                 dto.setImageLink((String) image.get("link"));
-
+                                dto.setLogoUrl(fetchLogoUrl(dto.getLink()));
 
                                 return dto;
                             })
-                            .filter(product -> isSourceInPopularMarketplaces(product.getLink()))
+                            .filter(product -> isSourceInKz(product.getLink()))
                             .toList();
                 });
     }
@@ -136,16 +139,29 @@ public class SearchService {
                                 dto.setLink((String) product.get("link"));
                                 dto.setSource((String) product.get("seller"));
                                 dto.setImageLink((String) product.get("thumbnail"));
+                                dto.setLogoUrl(fetchLogoUrl(dto.getLink()));
                                 return dto;
                             })
-//                            .filter(product -> isSourceInPopularMarketplaces(product.getLink()))
+                            .filter(product -> isSourceInKz(product.getLink()))
                             .toList();
                 });
 
     }
 
-    private boolean isSourceInPopularMarketplaces(String source){
-//        String[] marketPlaces = {"kaspi.kz", "ozon.kz", "satu.kz", "technodom.kz"};
+    private boolean isSourceInKz(String source){
         return source.contains(".kz");
+    }
+
+    private String fetchHost(String productUrl){
+        try {
+            URL url = new URL(productUrl);
+            return url.getHost();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Url is mailformed!");
+        }
+    }
+
+    private String fetchLogoUrl(String productUrl){
+        return logoParserUrl.replace("{host}", fetchHost(productUrl));
     }
 }

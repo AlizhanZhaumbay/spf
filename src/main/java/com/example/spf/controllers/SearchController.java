@@ -3,14 +3,14 @@ package com.example.spf.controllers;
 import com.example.spf.dtos.ProductDTO;
 import com.example.spf.services.FileStorageService;
 import com.example.spf.services.SearchService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 @RestController
@@ -22,16 +22,15 @@ public class SearchController {
         this.searchService = searchService;
     }
 
-    @PostMapping("search/image")
+    @GetMapping("search/image")
     public ResponseEntity<Mono<List<ProductDTO>>> findByImage(
             @RequestParam("image") MultipartFile image){
         return ResponseEntity.ok(searchService.findByImage(image));
     }
 
-    @PostMapping("search/text")
+    @GetMapping("search/text")
     public ResponseEntity<Mono<List<ProductDTO>>> findByText(
             @RequestParam("text") String text){
         return ResponseEntity.ok(searchService.findByText(text));
     }
-
 }
