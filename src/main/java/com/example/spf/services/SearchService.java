@@ -1,6 +1,8 @@
 package com.example.spf.services;
 
 import com.example.spf.dtos.ProductDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +21,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class SearchService {
@@ -139,13 +142,22 @@ public class SearchService {
                         return Collections.emptyList();
                     }
                     return shoppingAds.stream()
+                            .filter(product -> !Objects.isNull(product.get("link")) && !product.get("link").equals("#"))
                             .map(product -> {
+                                Object delivery = product.get("delivery");
+                                boolean freeDelivery = (!Objects.isNull(delivery) && delivery.equals("Бесплатная доставка"));
+
                                 ProductDTO dto = new ProductDTO();
                                 dto.setTitle((String) product.get("title"));
                                 dto.setPrice((String) product.get("price"));
                                 dto.setLink((String) product.get("link"));
                                 dto.setSource((String) product.get("seller"));
                                 dto.setImageLink((String) product.get("thumbnail"));
+
+                                if(!Objects.isNull(product.get("rating")) && !product.get("rating").equals("#")){
+                                    dto.setRating((double) product.get("rating"));
+                                }
+                                dto.setFreeDelivery(freeDelivery);
                                 dto.setLogoUrl(fetchLogoUrl(dto.getLink()));
                                 return dto;
                             })
@@ -164,6 +176,7 @@ public class SearchService {
             URL url = new URL(productUrl);
             return url.getHost();
         } catch (MalformedURLException e) {
+            log.error("Url is mailformed, productUrl: {}", productUrl);
             throw new RuntimeException("Url is mailformed!");
         }
     }

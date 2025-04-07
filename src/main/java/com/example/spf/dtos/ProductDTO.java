@@ -10,7 +10,12 @@ public class ProductDTO {
     private String price;
     private String source;
 
+    @JsonProperty("logo_url")
     private String logoUrl;
+
+    private double rating;
+
+    private boolean freeDelivery;
 
     public String getTitle() {
         return title;
@@ -58,5 +63,21 @@ public class ProductDTO {
 
     public void setLogoUrl(String logoUrl) {
         this.logoUrl = logoUrl;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public boolean isFreeDelivery() {
+        return freeDelivery;
+    }
+
+    public void setFreeDelivery(boolean freeDelivery) {
+        this.freeDelivery = freeDelivery;
     }
 }
