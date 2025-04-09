@@ -1,6 +1,7 @@
 package com.example.spf.controllers;
 
 import com.example.spf.dtos.ProductDTO;
+import com.example.spf.requests.SearchRequest;
 import com.example.spf.services.FileStorageService;
 import com.example.spf.services.SearchService;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +22,13 @@ public class SearchController {
 
     @PostMapping("search/image")
     public ResponseEntity<Mono<List<ProductDTO>>> findByImage(
-            @RequestParam("image") MultipartFile image){
-        return ResponseEntity.ok(searchService.findByImage(image));
+            @RequestParam("image") MultipartFile image, @RequestBody(required = false) SearchRequest request){
+        return ResponseEntity.ok(searchService.findByImage(image, request));
     }
 
     @GetMapping("search/text")
     public ResponseEntity<Mono<List<ProductDTO>>> findByText(
-            @RequestParam("text") String text){
-        return ResponseEntity.ok(searchService.findByText(text));
+            @RequestParam("text") String text, @RequestBody(required = false) SearchRequest request){
+        return ResponseEntity.ok(searchService.findByText(text, request));
     }
 }

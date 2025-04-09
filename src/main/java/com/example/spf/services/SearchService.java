@@ -1,8 +1,8 @@
 package com.example.spf.services;
 
+import com.example.spf.dtos.Filters;
 import com.example.spf.dtos.ProductDTO;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.spf.requests.SearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,12 +16,12 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 @Service
 public class SearchService {
@@ -49,12 +49,12 @@ public class SearchService {
         this.fileStorageService = fileStorageService;
     }
 
-    public Mono<List<ProductDTO>> findByImage(MultipartFile multipartFile) {
+    public Mono<List<ProductDTO>> findByImage(MultipartFile multipartFile, SearchRequest request) {
 
         final String searchEngine = environment.getProperty("image.search.engine");
         final String searchType = environment.getProperty("image.search.type");
         final String searchCountry = environment.getProperty("image.search.country");
-
+        final Filters filters = (request != null) ? request.filters() : Filters.emptyValue();
         final String imagePath;
         try {
             imagePath = fileStorageService.saveFile(multipartFile);
@@ -101,14 +101,15 @@ public class SearchService {
 
                                 return dto;
                             })
-                            .filter(product -> isSourceInKz(product.getLink()))
+                            .filter(filterByMarketplaceExists(filters))
                             .toList();
                 });
     }
 
-    public Mono<List<ProductDTO>> findByText(String text) {
+    public Mono<List<ProductDTO>> findByText(String text, SearchRequest request) {
         final String textSearchEngine = environment.getProperty("text.search.engine");
         final String location = environment.getProperty("text.search.location");
+        final Filters filters = (request != null) ? request.filters() : Filters.emptyValue();
 
         MultiValueMap<String, String> requestBody = MultiValueMap.fromSingleValue(Map.of(
                 "engine", textSearchEngine,
@@ -161,14 +162,28 @@ public class SearchService {
                                 dto.setLogoUrl(fetchLogoUrl(dto.getLink()));
                                 return dto;
                             })
-                            .filter(product -> isSourceInKz(product.getLink()))
+                            .filter(filterByMarketplaceExists(filters))
                             .toList();
                 });
 
     }
 
+    private Predicate<ProductDTO> filterByMarketplaceExists(Filters filters) {
+        if (filters != null && filters.marketplaces() != null && !filters.marketplaces().isEmpty()) {
+            List<String> allowed = filters.marketplaces();
+            return product -> marketplaceFilter(product.getSource(), allowed);
+        } else {
+            return product -> isSourceInKz(product.getSource());
+        }
+    }
+
+
     private boolean isSourceInKz(String source) {
         return source.contains(".kz");
+    }
+
+    private boolean marketplaceFilter(String source, List<String> marketPlaces){
+        return marketPlaces.stream().anyMatch(marketPlace -> source.toLowerCase().contains(marketPlace.toLowerCase()));
     }
 
     private String fetchHost(String productUrl) {
