@@ -1,7 +1,8 @@
 package com.example.spf.controllers;
 
 import com.example.spf.dtos.ProductDTO;
-import com.example.spf.requests.SearchRequest;
+import com.example.spf.requests.ImageSearchRequest;
+import com.example.spf.requests.TextSearchRequest;
 import com.example.spf.services.FileStorageService;
 import com.example.spf.services.SearchService;
 import org.springframework.http.MediaType;
@@ -23,13 +24,13 @@ public class SearchController {
 
     @PostMapping(value = "search/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Mono<List<ProductDTO>>> findByImage(
-            @RequestPart("image") MultipartFile image, @RequestPart(value = "data", required = false) SearchRequest request){
+            @RequestPart("image") MultipartFile image, @RequestPart(value = "data", required = false) ImageSearchRequest request){
         return ResponseEntity.ok(searchService.findByImage(image, request));
     }
 
-    @GetMapping("search/text")
+    @PostMapping("search/text")
     public ResponseEntity<Mono<List<ProductDTO>>> findByText(
-            @RequestParam("text") String text, @RequestBody(required = false) SearchRequest request){
-        return ResponseEntity.ok(searchService.findByText(text, request));
+            @RequestBody TextSearchRequest searchRequest){
+        return ResponseEntity.ok(searchService.findByText(searchRequest));
     }
 }

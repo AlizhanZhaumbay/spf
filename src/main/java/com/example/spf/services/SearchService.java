@@ -2,7 +2,8 @@ package com.example.spf.services;
 
 import com.example.spf.dtos.Filters;
 import com.example.spf.dtos.ProductDTO;
-import com.example.spf.requests.SearchRequest;
+import com.example.spf.requests.ImageSearchRequest;
+import com.example.spf.requests.TextSearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,7 +50,7 @@ public class SearchService {
         this.fileStorageService = fileStorageService;
     }
 
-    public Mono<List<ProductDTO>> findByImage(MultipartFile multipartFile, SearchRequest request) {
+    public Mono<List<ProductDTO>> findByImage(MultipartFile multipartFile, ImageSearchRequest request) {
 
         final String searchEngine = environment.getProperty("image.search.engine");
         final String searchType = environment.getProperty("image.search.type");
@@ -106,7 +107,7 @@ public class SearchService {
                 });
     }
 
-    public Mono<List<ProductDTO>> findByText(String text, SearchRequest request) {
+    public Mono<List<ProductDTO>> findByText(TextSearchRequest request) {
         final String textSearchEngine = environment.getProperty("text.search.engine");
         final String location = environment.getProperty("text.search.location");
         final Filters filters = (request != null) ? request.filters() : Filters.emptyValue();
@@ -116,7 +117,7 @@ public class SearchService {
                 "api_key", applicationKey,
                 "location", location,
                 "hl", searchHl,
-                "q", text,
+                "q", request.text(),
                 "gl", "kz",
                 "google_domain", "google.kz"
         ));
