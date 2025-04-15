@@ -174,7 +174,7 @@ public class SearchService {
             List<String> allowed = filters.marketplaces();
             return product -> marketplaceFilter(product.getSource(), allowed);
         } else {
-            return product -> isSourceInKz(product.getSource());
+            return product -> isSourceInKz(product.getLink());
         }
     }
 
