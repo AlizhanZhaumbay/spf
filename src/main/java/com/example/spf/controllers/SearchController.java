@@ -3,7 +3,6 @@ package com.example.spf.controllers;
 import com.example.spf.dtos.ProductDTO;
 import com.example.spf.requests.ImageSearchRequest;
 import com.example.spf.requests.TextSearchRequest;
-import com.example.spf.services.FileStorageService;
 import com.example.spf.services.SearchService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,7 @@ import java.util.List;
 public class SearchController {
     private final SearchService searchService;
 
-    public SearchController(SearchService searchService, FileStorageService fileStorageService) {
+    public SearchController(SearchService searchService) {
         this.searchService = searchService;
     }
 
