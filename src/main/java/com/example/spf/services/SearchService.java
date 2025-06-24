@@ -118,7 +118,7 @@ public class SearchService {
                 "location", location,
                 "hl", searchHl,
                 "q", request.text(),
-                "gl", "kz",
+//                "gl", "kz",
                 "google_domain", "google.kz"
         ));
 
@@ -144,7 +144,7 @@ public class SearchService {
                         return Collections.emptyList();
                     }
                     return shoppingAds.stream()
-                            .filter(product -> !Objects.isNull(product.get("link")) && !product.get("link").equals("#"))
+                            .filter(product -> !Objects.isNull(product.get("product_link")) && !product.get("product_link").equals("#"))
                             .map(product -> {
                                 Object delivery = product.get("delivery");
                                 boolean freeDelivery = (!Objects.isNull(delivery) && delivery.equals("Бесплатная доставка"));
@@ -152,7 +152,7 @@ public class SearchService {
                                 ProductDTO dto = new ProductDTO();
                                 dto.setTitle((String) product.get("title"));
                                 dto.setPrice((String) product.get("price"));
-                                dto.setLink((String) product.get("link"));
+                                dto.setLink((String) product.get("product_link"));
                                 dto.setSource((String) product.get("seller"));
                                 dto.setImageLink((String) product.get("thumbnail"));
 
@@ -160,7 +160,7 @@ public class SearchService {
                                     dto.setRating((double) product.get("rating"));
                                 }
                                 dto.setFreeDelivery(freeDelivery);
-                                dto.setLogoUrl(fetchLogoUrl(dto.getLink()));
+//                                dto.setLogoUrl(fetchLogoUrl(dto.getLink()));
                                 return dto;
                             })
                             .filter(filterByMarketplaceExists(filters))
@@ -180,6 +180,7 @@ public class SearchService {
 
 
     private boolean isSourceInKz(String source) {
+        if(source == null) return false;
         return source.contains(".kz");
     }
 
