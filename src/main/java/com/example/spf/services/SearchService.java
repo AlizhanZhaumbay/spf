@@ -118,7 +118,7 @@ public class SearchService {
                 "location", location,
                 "hl", searchHl,
                 "q", request.text(),
-//                "gl", "kz",
+                "gl", "ru",
                 "google_domain", "google.kz"
         ));
 
